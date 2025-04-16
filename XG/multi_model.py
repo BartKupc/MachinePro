@@ -162,8 +162,8 @@ class ModelTrainer:
 
 if __name__ == "__main__":
     bitget_client = BitgetFutures()
-    model_dir = Path(__file__).parent / 'model'
-    visual_dir = Path(__file__).parent / 'visualizations'
+    model_dir = Path(__file__).parent / 'model' / 'big'
+    visual_dir = Path(__file__).parent / 'visualizations'/ 'big'
 
     trainer = ModelTrainer(model_dir, visual_dir)
 
