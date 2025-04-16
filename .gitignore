@@ -70,3 +70,8 @@ coverage.xml
 # Misc
 .DS_Store
 Thumbs.db 
+
+# Machine Learning Models
+*.pkl
+*.joblib
+*.h5
