@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block page_title %}Trading History{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Signal History</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Price</th>
+                                <th>Market Regime</th>
+                                <th>Signal</th>
+                                <th>PC1</th>
+                                <th>PC2</th>
+                                <th>PC3</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in market_data.history|reverse %}
+                            <tr>
+                                <td>{{ entry.last_updated }}</td>
+                                <td>${{ entry.formatted_price }}</td>
+                                <td>
+                                    <span class="badge {% if 'Bull' in entry.market_regime %}bg-success
+                                                      {% elif 'Bear' in entry.market_regime %}bg-danger
+                                                      {% else %}bg-secondary{% endif %}">
+                                        {{ entry.market_regime }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge {% if entry.trade_signal == 'Go Long' %}bg-success
+                                                      {% elif entry.trade_signal == 'Go Short' %}bg-danger
+                                                      {% elif entry.trade_signal in ['Consider Long', 'Consider Short'] %}bg-warning
+                                                      {% elif entry.trade_signal in ['Exit Long', 'Exit Short'] %}bg-secondary
+                                                      {% else %}bg-info{% endif %}">
+                                        {{ entry.trade_signal }}
+                                    </span>
+                                </td>
+                                <td>{{ entry.pca1|round(2) }}</td>
+                                <td>{{ entry.pca2|round(2) }}</td>
+                                <td>{{ entry.pca3|round(2) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Summary Statistics -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Session Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h6>Total Signals</h6>
+                                <h3>{{ market_data.history|length }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h6>Session Start</h6>
+                                <p>{{ market_data.history[-1].last_updated if market_data.history else 'No data' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h6>Latest Update</h6>
+                                <p>{{ market_data.history[0].last_updated if market_data.history else 'No data' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("History page loaded");
+});
+</script>
+
+<style>
+.table td, .table th {
+    vertical-align: middle;
+}
+.badge {
+    font-size: 0.9em;
+    padding: 0.5em 0.7em;
+}
+</style>
+{% endblock %} 

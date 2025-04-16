@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block page_title %}PCA Market Dashboard{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Current Market Status</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h1 class="display-4 mb-3">${{ market_data.formatted_price }}</h1>
+                        <div class="d-flex align-items-center mb-3">
+                            <h5 class="me-3">Market Regime:</h5>
+                            <span class="badge bg-info fs-6">{{ market_data.market_regime }}</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <h5 class="me-3">Trade Signal:</h5>
+                            <span class="badge fs-6 
+                                {% if market_data.trade_signal == 'Go Long' %}bg-success
+                                {% elif market_data.trade_signal == 'Go Short' %}bg-danger
+                                {% elif market_data.trade_signal == 'Consider Long' %}bg-info
+                                {% elif market_data.trade_signal == 'Consider Short' %}bg-warning
+                                {% elif market_data.trade_signal == 'Exit Long' or market_data.trade_signal == 'Exit Short' %}bg-secondary
+                                {% else %}bg-light text-dark{% endif %}">
+                                {{ market_data.trade_signal }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0">PCA Components</h6>
+                            </div>
+                            <div class="card-body">
+                                {% for component in market_data.pca_interpretations[:3] %}
+                                <div class="mb-3">
+                                    <label class="form-label">PC{{ loop.index }} - {{ component.name }} ({{ component.variance }}%)</label>
+                                    <div class="progress">
+                                        <div class="progress-bar {% if component.current_value > 0 %}bg-success{% else %}bg-danger{% endif %}"
+                                             role="progressbar"
+                                             style="width: {{ (component.current_value|abs * 20)|round(0) }}%">
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">Value: {{ component.current_value|round(2) }}</small>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PCA Analysis Summary -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">PCA Analysis Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Component</th>
+                                <th>Variance</th>
+                                <th>Description</th>
+                                <th>Trading Guidance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>PC1 (44.06%)</td>
+                                <td>{{ market_data.pca_interpretations[0].current_value|round(2) }}</td>
+                                <td>{{ market_data.pca_interpretations[0].description }}</td>
+                                <td>{{ market_data.pca_interpretations[0].trading_guidance }}</td>
+                            </tr>
+                            <tr>
+                                <td>PC2 (37.15%)</td>
+                                <td>{{ market_data.pca_interpretations[1].current_value|round(2) }}</td>
+                                <td>{{ market_data.pca_interpretations[1].description }}</td>
+                                <td>{{ market_data.pca_interpretations[1].trading_guidance }}</td>
+                            </tr>
+                            <tr>
+                                <td>PC3 (6.62%)</td>
+                                <td>{{ market_data.pca_interpretations[2].current_value|round(2) }}</td>
+                                <td>{{ market_data.pca_interpretations[2].description }}</td>
+                                <td>{{ market_data.pca_interpretations[2].trading_guidance }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Market Summary -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Detailed Market Analysis</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert 
+                    {% if market_data.trade_signal == 'Go Long' %}alert-success
+                    {% elif market_data.trade_signal == 'Go Short' %}alert-danger
+                    {% elif market_data.trade_signal in ['Consider Long', 'Consider Short'] %}alert-warning
+                    {% else %}alert-info{% endif %}">
+                    <h4 class="alert-heading">{{ market_data.market_regime }}</h4>
+                    <p><strong>Summary:</strong> {{ market_data.market_description.summary }}</p>
+                    <p><strong>Recommendation:</strong> {{ market_data.market_description.recommendation }}</p>
+                    <hr>
+                    <div class="row">
+                        {% for component in market_data.market_description.components %}
+                        <div class="col-md-4">
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h6 class="mb-0">{{ component.name }}</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p class="mb-1"><strong>Value:</strong> {{ component.value|round(2) }}</p>
+                                    <p class="mb-1"><strong>Interpretation:</strong> {{ component.interpretation }}</p>
+                                    <p class="mb-0"><small class="text-muted">{{ component.description }}</small></p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Trading Signal Interpretation -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Trading Signal Details</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="mb-3">${{ market_data.formatted_price }}</h4>
+                        <div class="d-flex align-items-center mb-3">
+                            <h5 class="me-3">Market Regime:</h5>
+                            <span class="badge bg-info fs-6">{{ market_data.market_regime }}</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <h5 class="me-3">Trade Signal:</h5>
+                            <span class="badge fs-6 
+                                {% if market_data.trade_signal == 'Go Long' %}bg-success
+                                {% elif market_data.trade_signal == 'Go Short' %}bg-danger
+                                {% elif market_data.trade_signal == 'Consider Long' %}bg-info
+                                {% elif market_data.trade_signal == 'Consider Short' %}bg-warning
+                                {% elif market_data.trade_signal == 'Exit Long' or market_data.trade_signal == 'Exit Short' %}bg-secondary
+                                {% else %}bg-light text-dark{% endif %}">
+                                {{ market_data.trade_signal }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0">Technical Indicators</h6>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-2"><strong>RSI:</strong> {{ market_data.rsi|round(2) }}</p>
+                                <p class="mb-2"><strong>MACD Diff:</strong> {{ market_data.macd_diff|round(2) }}</p>
+                                <p class="mb-2"><strong>ATR Ratio:</strong> {{ market_data.atr_ratio|round(2) }}</p>
+                                <p class="mb-2"><strong>Volume Ratio:</strong> {{ market_data.volume_ratio|round(2) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("Dashboard loaded, initializing page");
+});
+</script>
+
+<style>
+    .progress {
+        height: 20px;
+        margin-bottom: 12px;
+    }
+    /* For mobile devices */
+    @media (max-width: 768px) {
+        .col-md-4, .col-md-6 {
+            flex: 0 0 100%;
+            max-width: 100%;
+            margin-bottom: 15px;
+        }
+    }
+</style>
+{% endblock %} 

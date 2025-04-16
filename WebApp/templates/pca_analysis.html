@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block page_title %}PCA Analysis Details{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">PCA Component Analysis</h5>
+            </div>
+            <div class="card-body">
+                <!-- PC1 Analysis -->
+                <div class="card mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0">PC1 - Trend Strength (44.06% Variance)</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="progress mb-3">
+                                    <div class="progress-bar {% if market_data.pca_interpretations[0].current_value > 0 %}bg-success{% else %}bg-danger{% endif %}"
+                                         role="progressbar"
+                                         style="width: {{ (market_data.pca_interpretations[0].current_value|abs * 20)|round(0) }}%">
+                                    </div>
+                                </div>
+                                <p><strong>Current Value:</strong> {{ market_data.pca_interpretations[0].current_value|round(2) }}</p>
+                                <p><strong>Description:</strong> {{ market_data.pca_interpretations[0].description }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="alert alert-info">
+                                    <h6 class="alert-heading">Trading Guidance</h6>
+                                    <p class="mb-0">{{ market_data.pca_interpretations[0].trading_guidance }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PC2 Analysis -->
+                <div class="card mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0">PC2 - Volume & Short-Term Trend (37.15% Variance)</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="progress mb-3">
+                                    <div class="progress-bar {% if market_data.pca_interpretations[1].current_value > 0 %}bg-success{% else %}bg-danger{% endif %}"
+                                         role="progressbar"
+                                         style="width: {{ (market_data.pca_interpretations[1].current_value|abs * 20)|round(0) }}%">
+                                    </div>
+                                </div>
+                                <p><strong>Current Value:</strong> {{ market_data.pca_interpretations[1].current_value|round(2) }}</p>
+                                <p><strong>Description:</strong> {{ market_data.pca_interpretations[1].description }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="alert alert-info">
+                                    <h6 class="alert-heading">Trading Guidance</h6>
+                                    <p class="mb-0">{{ market_data.pca_interpretations[1].trading_guidance }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PC3 Analysis -->
+                <div class="card mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0">PC3 - Momentum Shift (6.62% Variance)</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="progress mb-3">
+                                    <div class="progress-bar {% if market_data.pca_interpretations[2].current_value > 0 %}bg-success{% else %}bg-danger{% endif %}"
+                                         role="progressbar"
+                                         style="width: {{ (market_data.pca_interpretations[2].current_value|abs * 20)|round(0) }}%">
+                                    </div>
+                                </div>
+                                <p><strong>Current Value:</strong> {{ market_data.pca_interpretations[2].current_value|round(2) }}</p>
+                                <p><strong>Description:</strong> {{ market_data.pca_interpretations[2].description }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="alert alert-info">
+                                    <h6 class="alert-heading">Trading Guidance</h6>
+                                    <p class="mb-0">{{ market_data.pca_interpretations[2].trading_guidance }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PC4 Analysis -->
+                <div class="card mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0">PC4 - Oscillator Divergence & Market Extremes (10.53% Variance)</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="progress mb-3">
+                                    <div class="progress-bar {% if market_data.pca_interpretations[3].current_value > 0 %}bg-success{% else %}bg-danger{% endif %}"
+                                         role="progressbar"
+                                         style="width: {{ (market_data.pca_interpretations[3].current_value|abs * 20)|round(0) }}%">
+                                    </div>
+                                </div>
+                                <p><strong>Current Value:</strong> {{ market_data.pca_interpretations[3].current_value|round(2) }}</p>
+                                <p><strong>Description:</strong> {{ market_data.pca_interpretations[3].description }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="alert alert-info">
+                                    <h6 class="alert-heading">Trading Guidance</h6>
+                                    <p class="mb-0">{{ market_data.pca_interpretations[3].trading_guidance }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PC5 Analysis -->
+                <div class="card mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0">PC5 - Volatility & Short-Term Oscillation (5.26% Variance)</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="progress mb-3">
+                                    <div class="progress-bar {% if market_data.pca_interpretations[4].current_value > 0 %}bg-success{% else %}bg-danger{% endif %}"
+                                         role="progressbar"
+                                         style="width: {{ (market_data.pca_interpretations[4].current_value|abs * 20)|round(0) }}%">
+                                    </div>
+                                </div>
+                                <p><strong>Current Value:</strong> {{ market_data.pca_interpretations[4].current_value|round(2) }}</p>
+                                <p><strong>Description:</strong> {{ market_data.pca_interpretations[4].description }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="alert alert-info">
+                                    <h6 class="alert-heading">Trading Guidance</h6>
+                                    <p class="mb-0">{{ market_data.pca_interpretations[4].trading_guidance }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("PCA Analysis page loaded");
+    });
+</script>
+
+<style>
+    .progress {
+        height: 20px;
+        margin-bottom: 12px;
+    }
+    
+    /* Improved styling for component cards */
+    .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+    
+    .card-header {
+        font-weight: bold;
+    }
+    
+    .indicator-weight {
+        display: inline-block;
+        width: 100px;
+        height: 10px;
+        background-color: #e9ecef;
+        margin-right: 10px;
+        position: relative;
+    }
+    
+    .indicator-weight-fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        background-color: #007bff;
+    }
+</style>
+{% endblock %} 
