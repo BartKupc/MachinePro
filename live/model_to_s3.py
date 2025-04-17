@@ -10,12 +10,13 @@ BUCKET_NAME = "machinepro-models"
 # Initialize S3 client
 s3 = boto3.client('s3', region_name='eu-west-1')
 
-def upload_model(model_name, local_dir):
+def upload_model(model_name, local_dir, s3_name=None):
     """
     Upload model to S3
     Args:
-        model_name: Name of the model file
+        model_name: Name of the model file locally
         local_dir: Directory where the model is located
+        s3_name: Optional different name to use in S3 (if None, uses model_name)
     """
     try:
         local_path = Path(local_dir) / model_name
@@ -23,9 +24,12 @@ def upload_model(model_name, local_dir):
         if not local_path.exists():
             logging.error(f"Model not found at {local_path}")
             return False
+        
+        # Use s3_name if provided, otherwise use original model_name
+        upload_name = s3_name if s3_name else model_name
             
-        logging.info(f"Uploading {local_path} to S3 bucket: {BUCKET_NAME}")
-        s3.upload_file(str(local_path), BUCKET_NAME, model_name)
+        logging.info(f"Uploading {local_path} to S3 bucket: {BUCKET_NAME} as {upload_name}")
+        s3.upload_file(str(local_path), BUCKET_NAME, upload_name)
         logging.info("✅ Upload successful")
         return True
     except Exception as e:
@@ -49,9 +53,14 @@ def download_model(model_name):
         return None
 
 if __name__ == "__main__":
-    # Upload example - directory is configurable
-    upload_dir = base_dir / 'XG' / 'model' / 'big'
-    upload_model('xgb_regressor.pkl', upload_dir)
+    # Upload examples
+    # upload_dir = base_dir / 'XG' / 'model' / 'small'
+    
+    # Upload with same name
+    # upload_model('xgb_regressor.pkl', upload_dir)
+    
+    # Upload with different name
+    # upload_model('xgb_regressor.pkl', upload_dir, s3_name='xgb_regressor_small.pkl')
     
     # Download - always saves to live/models/
-    download_model('xgb_regressor.pkl')
+    download_model('xgb_regressor_small.pkl')
